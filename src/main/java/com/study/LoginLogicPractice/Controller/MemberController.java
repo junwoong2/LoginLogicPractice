@@ -32,9 +32,9 @@ public class MemberController {
     public String loginForm(){
         return "login";
     }
-    @PostMapping("/member/login")
+    @PostMapping("/member/login") // 세션관리도 추가
     public String login(@ModelAttribute MemberDto memberDto, HttpSession session){
-        MemberDto loginResult = memberService.login(memberDto);
+        MemberDto loginResult = memberService.login(memberDto); // 회원정보가 맞는지 확인
         if(loginResult != null){
             session.setAttribute("loginEmail", loginResult.getMemberEmail());
             return "main";
