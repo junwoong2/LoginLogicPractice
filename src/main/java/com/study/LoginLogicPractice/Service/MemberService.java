@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,5 +48,57 @@ public class MemberService {
             return null;
         }
 
+    }
+
+    public List<MemberDto> findAll() {
+        List<MemberEntity> memberEntityList = memberRepository.findAll();
+        List<MemberDto> memberDtoList = new ArrayList<>();
+        for(MemberEntity memberEntity: memberEntityList){
+            memberDtoList.add(MemberDto.toMemberDto(memberEntity));
+            //MemberDto memberDto = MemberDto.toMemberDto(memberEntity);
+            //memberDtoList.add(memberDto);
+        }
+        return memberDtoList;
+    }
+
+    public MemberDto findById(Long id) {
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(id);
+        if(optionalMemberEntity.isPresent()){
+            //MemberEntity memberEntity = optionalMemberEntity.get();
+            //MemberDto memberDto = MemberDto.toMemberDto(memberEntity);
+            //return memberDto;
+            return MemberDto.toMemberDto(optionalMemberEntity.get());
+        }
+        else{
+            return null;
+        }
+    }
+
+    public MemberDto updateForm(String myEmail) {
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findByMemberEmail(myEmail);
+        if(optionalMemberEntity.isPresent()){
+            return MemberDto.toMemberDto(optionalMemberEntity.get());
+        }
+        else{
+            return null;
+        }
+    }
+
+    public void update(MemberDto memberDto) {
+        memberRepository.save(MemberEntity.toUpdateMemberEntity(memberDto));
+    }
+
+    public void deleteById(Long id) {
+        memberRepository.deleteById(id);
+    }
+
+    public String emailCheck(String memberEmail) {
+        Optional<MemberEntity> byMemberEmail = memberRepository.findByMemberEmail(memberEmail);
+        if(byMemberEmail.isPresent()){
+            return null;
+        }
+        else{
+            return "ok";
+        }
     }
 }
